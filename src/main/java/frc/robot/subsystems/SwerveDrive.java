@@ -140,4 +140,25 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Robot Angle", getPose().getRotation().getDegrees());
         SmartDashboard.putNumber("Gyro Angle", Math.toDegrees(gyroAngleRad));
     }
+
+    @Override
+    public void simulationPeriodic() {
+        double dt = 0.02;
+        
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].updateSim(dt);
+        }
+        
+        ChassisSpeeds chassisSpeeds = SwerveConstants.KINEMATICS.toChassisSpeeds(
+            modules[0].getState(),
+            modules[1].getState(),
+            modules[2].getState(),
+            modules[3].getState()
+        );
+        
+        gyroAngleRad += chassisSpeeds.omegaRadiansPerSecond * dt;
+        
+        SmartDashboard.putNumber("Module 0 Angle", modules[0].getAngle().getDegrees());
+        SmartDashboard.putNumber("Module 0 Speed", modules[0].getVelocity());
+    }
 }
