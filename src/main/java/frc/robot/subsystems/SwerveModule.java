@@ -65,7 +65,7 @@ public class SwerveModule {
         /***
          * Look into SwerveModuleState.optimize. Think about what we are trying to optimize.
          */
-        desiredState.optimize(desiredState.angle);
+		desiredState.optimize(getAngle());
 
         /***
          * Look at the properties of desireState that might be useful. Also make sure to keep turnPositionSetpoint in radians.
@@ -87,13 +87,13 @@ public class SwerveModule {
         /***
          * How should we convert from angular velocity to translational velocity?
          */
-        driveVelocityMPS = driveAngularVelocity / ((2 * Math.PI) * wheelCircumference);
+        driveVelocityMPS = (driveAngularVelocity / (2 * Math.PI)) * wheelCircumference;
 
         /***
          * How is position, velocity, and time related?
 		 * Distance = Speed * Time
          */
-        drivePositionMeters += driveAngularVelocity * dt;
+        drivePositionMeters += driveVelocityMPS * dt;
         
         double turnVoltage = calculateTurnVoltage();
         turnMotorSim.setInputVoltage(turnVoltage);
