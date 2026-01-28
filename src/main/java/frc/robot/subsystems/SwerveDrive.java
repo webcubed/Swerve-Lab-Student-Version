@@ -144,20 +144,23 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         double dt = 0.02;
-        
-        for (int i = 0; i < modules.length; i++) {
-            modules[i].updateSim(dt);
+
+        for (SwerveModule module : modules) {
+            module.updateSim(dt);
         }
-        
+
         ChassisSpeeds chassisSpeeds = SwerveConstants.KINEMATICS.toChassisSpeeds(
-            modules[0].getState(),
-            modules[1].getState(),
-            modules[2].getState(),
-            modules[3].getState()
+                modules[0].getState(),
+                modules[1].getState(),
+                modules[2].getState(),
+                modules[3].getState()
         );
-        
+
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond,
+                chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond,
+                getPose().getRotation());
         gyroAngleRad += chassisSpeeds.omegaRadiansPerSecond * dt;
-        
+
         SmartDashboard.putNumber("Module 0 Angle", modules[0].getAngle().getDegrees());
         SmartDashboard.putNumber("Module 0 Speed", modules[0].getVelocity());
     }
