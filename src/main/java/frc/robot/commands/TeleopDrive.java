@@ -16,6 +16,9 @@ public class TeleopDrive extends Command {
         /***
          * Fill out this command constructor
          */
+		this.swerveDrive = swerveDrive;
+		this.controller = controller;
+		addRequirements(swerveDrive);
     }
     
     @Override
@@ -25,30 +28,30 @@ public class TeleopDrive extends Command {
          * Also look into OIConstants in Constants.java to make sure the controller syncs correctly
          * Might have to negate something 🤔🤔🤔. Do some trial and error.
          */
-        double xInput = ;
-        double yInput = ;
-        double rotInput = ;
+		double xInput = controller.getRawAxis(OIConstants.LEFT_X_AXIS);
+        double yInput = controller.getRawAxis(OIConstants.LEFT_Y_AXIS);
+        double rotInput = controller.getRawAxis(OIConstants.RIGHT_X_AXIS);
 
         /***
          * Apply a deadband to these inputs. Look at OIConstants.
          */
-        xInput = MathUtil.applyDeadband(xInput, );
-        yInput = MathUtil.applyDeadband(yInput, );
-        rotInput = MathUtil.applyDeadband(rotInput, );
+        xInput = MathUtil.applyDeadband(xInput, OIConstants.DEADBAND);
+        yInput = MathUtil.applyDeadband(yInput, OIConstants.DEADBAND);
+        rotInput = MathUtil.applyDeadband(rotInput, OIConstants.DEADBAND);
         
         // Challenge: square the inputs while preserving the signs
 
         /***
          * Use the inputs and look at constants for the following: the max speed, the speed multipler. What do we do with these?
          */
-        double xSpeed = xInput * ;
-        double ySpeed = yInput * ;
-        double rotSpeed = rotInput * ;
+        double xSpeed = xInput * SwerveConstants.MAX_SPEED_MPS * OIConstants.SPEED_MULTIPLIER;
+        double ySpeed = yInput * SwerveConstants.MAX_SPEED_MPS * OIConstants.SPEED_MULTIPLIER;
+        double rotSpeed = rotInput * SwerveConstants.MAX_SPEED_MPS * OIConstants.SPEED_MULTIPLIER;
         
         /***
          * Fix the error here. What are the arguments to the method? Hint: look at the end method below...
          */
-        swerveDrive.drive();
+        swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotSpeed);
     }
     
     @Override
